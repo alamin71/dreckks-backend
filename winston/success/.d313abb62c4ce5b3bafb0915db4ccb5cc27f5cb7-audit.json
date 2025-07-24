@@ -1,0 +1,30 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 1
+    },
+    "auditLog": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\success\\.d313abb62c4ce5b3bafb0915db4ccb5cc27f5cb7-audit.json",
+    "files": [
+        {
+            "date": 1752857536213,
+            "name": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\success\\18-07-2025-22-success.log",
+            "hash": "2dc4a554b15795fdb665b19b5f76a8a859b4754c2fb97dabc6b8c45c6519a9e3"
+        },
+        {
+            "date": 1752859979445,
+            "name": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\success\\18-07-2025-23-success.log",
+            "hash": "f0e616537ec1f39a091f8cdff8405fbdf9c3e872ac340a22652f79badbff0f90"
+        },
+        {
+            "date": 1752866045305,
+            "name": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\success\\19-07-2025-01-success.log",
+            "hash": "95baa8a620084c0ae4b03f65e51ab08d7a2fd54c94c032c1f1dde2a16e5df3c7"
+        },
+        {
+            "date": 1752868878205,
+            "name": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\success\\19-07-2025-02-success.log",
+            "hash": "bfad8fb4b292ed7c0de7019a89f124bf65b0d9f9b2f8b2e1814009b4cd827628"
+        }
+    ],
+    "hashType": "sha256"
+}
