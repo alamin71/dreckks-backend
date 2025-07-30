@@ -6,24 +6,9 @@
     "auditLog": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\error\\.fc2362e5f7c59fcb29bd8b8f561e8b01fa282e25-audit.json",
     "files": [
         {
-            "date": 1752857536215,
-            "name": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\error\\18-07-2025-22-error.log",
-            "hash": "8fbf59c35a4ad58ad5f2aeebafca07fd3fe39ed0dcaf400e638f87964047b28d"
-        },
-        {
-            "date": 1752859979448,
-            "name": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\error\\18-07-2025-23-error.log",
-            "hash": "399d29d88997cfbd331089b7b6e466ca3dd0e7c4dce8c63315dddd349b6fb1ae"
-        },
-        {
-            "date": 1752866045307,
-            "name": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\error\\19-07-2025-01-error.log",
-            "hash": "8383d79b32473bc5faca8f6c6c515038ef9ec3f991977c08c53415a1704c6ff5"
-        },
-        {
-            "date": 1752868878208,
-            "name": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\error\\19-07-2025-02-error.log",
-            "hash": "c057337264867bd512ac89ca917b2f16145022f4b73a0416a0e84c6cea44a2e8"
+            "date": 1753831549047,
+            "name": "C:\\Al-Amin\\project\\dreckks_backend\\winston\\error\\30-07-2025-05-error.log",
+            "hash": "e9846551177e7479781b222d343c8ee99ed8515be966475d8652ac9af4c88b01"
         }
     ],
     "hashType": "sha256"

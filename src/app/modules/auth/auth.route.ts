@@ -37,14 +37,14 @@ router.post(
 
 router.post(
   "/dashboard/reset-password",
-  auth(USER_ROLES.ADMIN, USER_ROLES.VENDOR),
+  auth(USER_ROLES.ADMIN, USER_ROLES.HOSPITALITY_VENUE),
   validateRequest(AuthValidation.createResetPasswordZodSchema),
   AuthController.resetPasswordByUrl
 );
 
 router.post(
   "/change-password",
-  auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.VENDOR),
+  auth(USER_ROLES.ADMIN, USER_ROLES.USER, USER_ROLES.HOSPITALITY_VENUE),
   validateRequest(AuthValidation.createChangePasswordZodSchema),
   AuthController.changePassword
 );

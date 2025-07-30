@@ -47,7 +47,7 @@ const createUserToDB = async (payload: IUser): Promise<IUser> => {
 // create Businessman
 const createVendorToDB = async (payload: IUser): Promise<IUser> => {
   //set role
-  payload.role = USER_ROLES.VENDOR;
+  payload.role = USER_ROLES.HOSPITALITY_VENUE;
   const createUser = await User.create(payload);
   if (!createUser) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Failed to create user");
