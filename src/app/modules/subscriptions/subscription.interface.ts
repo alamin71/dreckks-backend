@@ -1,10 +1,8 @@
-import { Types } from 'mongoose';
-
 export interface ISubscription {
-  name: string;
+  title: string;
+  billingCycle: 'monthly' | 'quarterly' | 'yearly';
   price: number;
-  duration: 'monthly' | 'yearly'; // Better to restrict this
+  category: 'user' | 'hospitality venue' | 'service provider';
   features: string[];
   isActive?: boolean;
-  category?: Types.ObjectId; // Reference to Category model
 }

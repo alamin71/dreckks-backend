@@ -15,14 +15,17 @@ const createSubscription = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllSubscriptions = catchAsync(async (req: Request, res: Response) => {
-  const result = await SubscriptionService.getAllSubscriptions();
+  const result = await SubscriptionService.getAllSubscriptions(req.query);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Subscriptions retrieved successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
+
 
 const getSingleSubscription = catchAsync(async (req: Request, res: Response) => {
   const result = await SubscriptionService.getSingleSubscription(req.params.id);
