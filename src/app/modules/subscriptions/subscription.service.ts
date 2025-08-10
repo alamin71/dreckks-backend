@@ -1,6 +1,7 @@
 import { Subscription } from './subscription.model';
 import { ISubscription } from './subscription.interface';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { User } from '../user/user.model';
 
 const createSubscription = async (payload: ISubscription) => {
   return await Subscription.create(payload);
@@ -39,6 +40,16 @@ const updateSubscription = async (id: string, payload: Partial<ISubscription>) =
 const deleteSubscription = async (id: string) => {
   return await Subscription.findByIdAndDelete(id);
 };
+const selectSubscription = async (userId: string, planId: string) => {
+  
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  user.subscription = { plan: planId, status: 'active', isActive: true };
+  await user.save();
+  return user.subscription;
+};
 
 export const SubscriptionService = {
   createSubscription,
@@ -46,4 +57,5 @@ export const SubscriptionService = {
   getSingleSubscription,
   updateSubscription,
   deleteSubscription,
+  selectSubscription
 };

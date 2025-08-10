@@ -55,11 +55,17 @@ const deleteSubscription = catchAsync(async (req: Request, res: Response) => {
     message: 'Subscription deleted successfully',
   });
 });
+const selectSubscription = catchAsync(async (req: Request, res: Response) => {
+  const { userId, planId } = req.body;
+  const result = await SubscriptionService.selectSubscription(userId, planId);
+  res.json({ message: 'Subscription selected', data: result });
+});
 
 export const SubscriptionController = {
 createSubscription,
 getAllSubscriptions,
 getSingleSubscription,
 updateSubscription,
-deleteSubscription
+deleteSubscription,
+selectSubscription
 }

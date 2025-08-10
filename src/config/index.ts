@@ -29,6 +29,7 @@ export default {
     host: process.env.EMAIL_HOST,
     pass: process.env.EMAIL_PASS,
   },
+  
   express_sessoin: process.env.EXPRESS_SESSION_SECRET_KEY,
   social: {
     google_client_id: process.env.GOOGLE_CLIENT_ID,

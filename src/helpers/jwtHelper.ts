@@ -1,11 +1,55 @@
+// import jwt, { JwtPayload, Secret, SignOptions } from "jsonwebtoken";
+
+// const createToken = (payload: object, secret: Secret, expireTime: string) => {
+//   return jwt.sign(payload, secret, { expiresIn: expireTime } as SignOptions);
+// };
+
+// const verifyToken = (token: string, secret: Secret) => {
+//   return jwt.verify(token, secret) as JwtPayload;
+// };
+
+// export const jwtHelper = { createToken, verifyToken };
 import jwt, { JwtPayload, Secret, SignOptions } from "jsonwebtoken";
+import ms from "ms"; // for type support
+import config from "../config";
 
-const createToken = (payload: object, secret: Secret, expireTime: string) => {
-  return jwt.sign(payload, secret, { expiresIn: expireTime } as SignOptions);
+// Secret getter
+const getSecret = (secret: string | undefined): Secret => {
+  if (!secret) {
+    throw new Error("JWT secret is not defined");
+  }
+  return secret as Secret;
 };
 
-const verifyToken = (token: string, secret: Secret) => {
-  return jwt.verify(token, secret) as JwtPayload;
+// Create Access Token
+const createAccessToken = (payload: object) => {
+  const options: SignOptions = { 
+    expiresIn: config.jwt.jwt_expire_in as ms.StringValue || "30d" 
+  };
+  return jwt.sign(payload, getSecret(config.jwt.jwt_secret), options);
 };
 
-export const jwtHelper = { createToken, verifyToken };
+// Create Refresh Token
+const createRefreshToken = (payload: object) => {
+  const options: SignOptions = { 
+    expiresIn: config.jwt.jwt_refresh_expire_in as ms.StringValue || "365d" 
+  };
+  return jwt.sign(payload, getSecret(config.jwt.jwt_refresh_secret), options);
+};
+
+// Verify Access Token
+const verifyAccessToken = (token: string) => {
+  return jwt.verify(token, getSecret(config.jwt.jwt_secret)) as JwtPayload;
+};
+
+// Verify Refresh Token
+const verifyRefreshToken = (token: string) => {
+  return jwt.verify(token, getSecret(config.jwt.jwt_refresh_secret)) as JwtPayload;
+};
+
+export const jwtHelper = {
+  createAccessToken,
+  createRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+};

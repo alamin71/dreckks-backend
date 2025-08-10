@@ -20,6 +20,11 @@ router.patch(
   validateRequest(SubscriptionValidation.updateSubscriptionZodSchema),
   SubscriptionController.updateSubscription
 );
+router.post(
+  '/select',
+  SubscriptionController.selectSubscription
+);
+
 
 router.delete('/:id', SubscriptionController.deleteSubscription);
 

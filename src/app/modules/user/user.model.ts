@@ -112,6 +112,132 @@
 //   next();
 // });
 // export const User = model<IUser, UserModel>("User", userSchema);
+// import bcrypt from "bcrypt";
+// import { StatusCodes } from "http-status-codes";
+// import { model, Schema } from "mongoose";
+// import config from "../../../config";
+// import { USER_ROLES } from "../../../enums/user";
+// import AppError from "../../../errors/AppError";
+// import { IUser, UserModel } from "./user.interface";
+
+// // User Schema Definition
+// const userSchema = new Schema<IUser, UserModel>(
+//   {
+//     name: { type: String, required: true },
+//     role: {
+//       type: String,
+//       enum: Object.values(USER_ROLES),
+//       default: USER_ROLES.USER,
+//     },
+//     email: { type: String, required: true, unique: true, lowercase: true },
+//     password: { type: String, required: true, select: false, minlength: 8 },
+//     image: { type: String, default: "" },
+//     status: { type: String, enum: ["active", "blocked"], default: "active" },
+//     verified: { type: Boolean, default: false },
+//     isDeleted: { type: Boolean, default: false },
+     
+
+//     stripeCustomerId: { type: String, default: "" },
+//     defaultPaymentMethodId: { type: String, default: "" },
+
+//     profileData: {
+//       phone: { type: String, default: "" },
+//       address: { type: String, default: "" },
+//       businessName: { type: String, default: "" },
+//       serviceCategory: { type: String, default: "" },
+//       portfolioLink: { type: String, default: "" },
+//       venueName: { type: String, default: "" },
+//       venueType: { type: String, default: "" },
+//       location: { type: String, default: "" },
+//       capacity: { type: Number, default: null },
+//       amenities: { type: [String], default: [] },
+//     },
+
+//     subscription: {
+//       planId: { type: String, default: null },
+//       isActive: { type: Boolean, default: false },
+//       startDate: { type: Date, default: null },
+//       endDate: { type: Date, default: null },
+//        plan: { type: String },
+//     status: { type: String }
+//     },
+
+//     authentication: {
+//       isResetPassword: { type: Boolean, default: false },
+//       oneTimeCode: { type: Number, default: null },
+//       expireAt: { type: Date, default: null },
+//     },
+//   },
+//   { timestamps: true }
+// );
+
+// // ========================
+// // Static Methods
+// // ========================
+// userSchema.statics.isExistUserById = async (id: string) => {
+//   return await User.findById(id);
+// };
+
+// userSchema.statics.isExistUserByEmail = async (email: string) => {
+//   return await User.findOne({ email });
+// };
+
+// userSchema.statics.isExistUserByPhone = async (contact: string) => {
+//   return await User.findOne({ 'profileData.phone': contact });
+// };
+
+// // ========================
+// // Instance Methods
+// // ========================
+// userSchema.statics.isMatchPassword = async (
+//   password: string,
+//   hashPassword: string
+// ): Promise<boolean> => {
+//   return await bcrypt.compare(password, hashPassword);
+// };
+
+// // ========================
+// // Pre-save Hooks
+// // ========================
+// userSchema.pre("save", async function (next) {
+//   if (this.isModified("email")) {
+//     const isExist = await User.findOne({ email: this.get("email") });
+//     if (isExist) {
+//       throw new AppError(StatusCodes.BAD_REQUEST, "Email already exists!");
+//     }
+//   }
+
+//   if (this.isModified("password")) {
+//     this.password = await bcrypt.hash(
+//       this.password,
+//       Number(config.bcrypt_salt_rounds)
+//     );
+//   }
+
+//   next();
+// });
+
+// // ========================
+// // Query Middlewares (Soft Delete Logic)
+// // ========================
+// userSchema.pre("find", function (next) {
+//   this.find({ isDeleted: { $ne: true } });
+//   next();
+// });
+
+// userSchema.pre("findOne", function (next) {
+//   this.find({ isDeleted: { $ne: true } });
+//   next();
+// });
+
+// userSchema.pre("aggregate", function (next) {
+//   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+//   next();
+// });
+
+// export const User = model<IUser, UserModel>("User", userSchema);
+
+
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import { model, Schema } from "mongoose";
@@ -120,10 +246,8 @@ import { USER_ROLES } from "../../../enums/user";
 import AppError from "../../../errors/AppError";
 import { IUser, UserModel } from "./user.interface";
 
-// User Schema Definition
 const userSchema = new Schema<IUser, UserModel>(
   {
-    name: { type: String, required: true },
     role: {
       type: String,
       enum: Object.values(USER_ROLES),
@@ -140,16 +264,30 @@ const userSchema = new Schema<IUser, UserModel>(
     defaultPaymentMethodId: { type: String, default: "" },
 
     profileData: {
+      // Common
       phone: { type: String, default: "" },
-      address: { type: String, default: "" },
-      businessName: { type: String, default: "" },
-      serviceCategory: { type: String, default: "" },
-      portfolioLink: { type: String, default: "" },
-      venueName: { type: String, default: "" },
-      venueType: { type: String, default: "" },
       location: { type: String, default: "" },
+
+      // User specific
+      firstName: { type: String, default: "" },
+      lastName: { type: String, default: "" },
+      age: { type: Number, default: null },
+      weight: { type: Number, default: null },
+      sex: { type: String, default: "" },
+
+      // Service Provider specific
+      designation: { type: String, default: "" },
+      resumeUrl: { type: String, default: "" },
+
+      // Hospitality Venue specific
+      venueName: { type: String, default: "" },
+      hoursOfOperation: { type: String, default: "" },
       capacity: { type: Number, default: null },
-      amenities: { type: [String], default: [] },
+      displayQrCodes: { type: Boolean, default: false },
+      inAppPromotion: { type: Boolean, default: false },
+      allowRewards: { type: Boolean, default: false },
+      allowEvents: { type: Boolean, default: false },
+      venueTypes: { type: [String], default: [] },
     },
 
     subscription: {
@@ -157,6 +295,8 @@ const userSchema = new Schema<IUser, UserModel>(
       isActive: { type: Boolean, default: false },
       startDate: { type: Date, default: null },
       endDate: { type: Date, default: null },
+      plan: { type: String },
+      status: { type: String },
     },
 
     authentication: {
@@ -168,9 +308,7 @@ const userSchema = new Schema<IUser, UserModel>(
   { timestamps: true }
 );
 
-// ========================
-// Static Methods
-// ========================
+// Statics
 userSchema.statics.isExistUserById = async (id: string) => {
   return await User.findById(id);
 };
@@ -180,12 +318,9 @@ userSchema.statics.isExistUserByEmail = async (email: string) => {
 };
 
 userSchema.statics.isExistUserByPhone = async (contact: string) => {
-  return await User.findOne({ 'profileData.phone': contact });
+  return await User.findOne({ "profileData.phone": contact });
 };
 
-// ========================
-// Instance Methods
-// ========================
 userSchema.statics.isMatchPassword = async (
   password: string,
   hashPassword: string
@@ -193,9 +328,7 @@ userSchema.statics.isMatchPassword = async (
   return await bcrypt.compare(password, hashPassword);
 };
 
-// ========================
-// Pre-save Hooks
-// ========================
+// Hooks
 userSchema.pre("save", async function (next) {
   if (this.isModified("email")) {
     const isExist = await User.findOne({ email: this.get("email") });
@@ -214,9 +347,6 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// ========================
-// Query Middlewares (Soft Delete Logic)
-// ========================
 userSchema.pre("find", function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();

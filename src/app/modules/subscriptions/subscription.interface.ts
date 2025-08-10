@@ -4,5 +4,10 @@ export interface ISubscription {
   price: number;
   category: 'user' | 'hospitality venue' | 'service provider';
   features: string[];
+   planId?: string | null;
+   startDate?: Date | null;
+  endDate?: Date | null;
+  plan?: string;
+  status?: string;
   isActive?: boolean;
 }
