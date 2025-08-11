@@ -1,6 +1,6 @@
 import express from "express";
 import { UserRouter } from "../app/modules/user/user.route";
-import { AuthRouter } from "../app/modules/auth/auth.route";
+import AuthRouter from "../app/modules/auth/auth.route";
 import{PaymentRoutes} from "../app/modules/payments/payment.route";
 import{SubscriptionRoutes} from "../app/modules/subscriptions/subscription.route"
 
