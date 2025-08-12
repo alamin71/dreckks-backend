@@ -1,0 +1,7 @@
+Wed Aug 13 2025 2:15:28 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Aug 13 2025 2:15:29 [SERVER-NAME] info: [46m🚀 Database connected successfully[49m
+Wed Aug 13 2025 2:15:29 [SERVER-NAME] info: [33m♻️  Socket is listening on 0.0.0.0:6002[39m
+Wed Aug 13 2025 2:15:29 [SERVER-NAME] info: [33m♻️  Application listening on http://0.0.0.0:5000[39m
+Wed Aug 13 2025 2:53:1 [SERVER-NAME] info: 127.0.0.1 - POST /api/v1/auth/signup 201 - 1906.903 ms
+Wed Aug 13 2025 2:54:44 [SERVER-NAME] info: 127.0.0.1 - POST /api/v1/auth/verify-otp 200 - 174.700 ms
+Wed Aug 13 2025 2:59:17 [SERVER-NAME] info: 127.0.0.1 - POST /api/v1/auth/login 200 - 295.193 ms

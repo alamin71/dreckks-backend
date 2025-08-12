@@ -13,7 +13,7 @@ router.post('/login', validateRequest(AuthValidation.createLoginZodSchema), Auth
 router.post('/refresh-token', validateRequest(AuthValidation.createRefreshTokenZodSchema), AuthController.refreshToken);
 router.post('/resend-otp', validateRequest(AuthValidation.createResendOtpZodSchema), AuthController.resendOtp);
 router.post('/forgot-password', validateRequest(AuthValidation.createForgotPasswordZodSchema), AuthController.forgotPassword);
-router.post('/reset-password', validateRequest(AuthValidation.createResetPasswordZodSchema), AuthController.resetPassword);
+router.patch('/reset-password', validateRequest(AuthValidation.createResetPasswordZodSchema), AuthController.resetPassword);
 router.post('/change-password', validateRequest(AuthValidation.createChangePasswordZodSchema), AuthController.changePassword);
 
 export default router;

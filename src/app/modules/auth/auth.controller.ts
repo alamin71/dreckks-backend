@@ -150,7 +150,8 @@ import { StatusCodes } from 'http-status-codes';
 export const signup = catchAsync(async (req: Request, res: Response) => {
   const role = req.body.role;
   const result = await AuthService.signup(req.body, role);
-  sendResponse(res, { success: true, statusCode: StatusCodes.CREATED, message: result.message, data: result });
+  sendResponse(res, { 
+    success: true, statusCode: StatusCodes.CREATED, message: result.message, data: result });
 });
 
 // Verify OTP (issue tokens)

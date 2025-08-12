@@ -1,0 +1,12 @@
+Wed Aug 13 2025 1:5:42 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Aug 13 2025 1:5:43 [SERVER-NAME] info: [46m🚀 Database connected successfully[49m
+Wed Aug 13 2025 1:5:43 [SERVER-NAME] info: [33m♻️  Socket is listening on 0.0.0.0:6002[39m
+Wed Aug 13 2025 1:5:43 [SERVER-NAME] info: [33m♻️  Application listening on http://0.0.0.0:5000[39m
+Wed Aug 13 2025 1:56:17 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Aug 13 2025 1:56:19 [SERVER-NAME] info: [46m🚀 Database connected successfully[49m
+Wed Aug 13 2025 1:56:19 [SERVER-NAME] info: [33m♻️  Socket is listening on 0.0.0.0:6002[39m
+Wed Aug 13 2025 1:56:19 [SERVER-NAME] info: [33m♻️  Application listening on http://0.0.0.0:5000[39m
+Wed Aug 13 2025 1:58:4 [SERVER-NAME] info: [32mConfig validation successful.[39m
+Wed Aug 13 2025 1:58:5 [SERVER-NAME] info: [46m🚀 Database connected successfully[49m
+Wed Aug 13 2025 1:58:5 [SERVER-NAME] info: [33m♻️  Socket is listening on 0.0.0.0:6002[39m
+Wed Aug 13 2025 1:58:5 [SERVER-NAME] info: [33m♻️  Application listening on http://0.0.0.0:5000[39m

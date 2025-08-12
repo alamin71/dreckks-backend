@@ -37,6 +37,14 @@ const createRefreshToken = (payload: object) => {
   return jwt.sign(payload, getSecret(config.jwt.jwt_refresh_secret), options);
 };
 
+// Create Reset Password Token (Add this)
+const createResetPasswordToken = (payload: object) => {
+  const options: SignOptions = { 
+    expiresIn: "10m" // 10 মিনিটের জন্য
+  };
+  return jwt.sign(payload, getSecret(config.jwt.jwt_reset_password_secret), options);
+};
+
 // Verify Access Token
 const verifyAccessToken = (token: string) => {
   return jwt.verify(token, getSecret(config.jwt.jwt_secret)) as JwtPayload;
@@ -47,9 +55,16 @@ const verifyRefreshToken = (token: string) => {
   return jwt.verify(token, getSecret(config.jwt.jwt_refresh_secret)) as JwtPayload;
 };
 
+// Verify Reset Password Token (Add this)
+const verifyResetPasswordToken = (token: string) => {
+  return jwt.verify(token, getSecret(config.jwt.jwt_reset_password_secret)) as JwtPayload;
+};
+
 export const jwtHelper = {
   createAccessToken,
   createRefreshToken,
+  createResetPasswordToken,      // export here
   verifyAccessToken,
   verifyRefreshToken,
+  verifyResetPasswordToken       // export here
 };

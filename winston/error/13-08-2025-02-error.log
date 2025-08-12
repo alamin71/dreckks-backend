@@ -1,0 +1,4 @@
+Wed Aug 13 2025 2:53:1 [SERVER-NAME] error: Email Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2422ba1e09csm281399165ad.16 - gsmtp
+Wed Aug 13 2025 2:54:14 [SERVER-NAME] error: 127.0.0.1 - POST /api/v1/auth/verify-otp 400 - 95.205 ms
+Wed Aug 13 2025 2:54:23 [SERVER-NAME] error: 127.0.0.1 - POST /api/v1/auth/verify-otp 404 - 84.037 ms
