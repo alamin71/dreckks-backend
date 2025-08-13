@@ -3,7 +3,7 @@ import { User } from "./user.model";
 import { IUser } from "./user.interface";
 import AppError from "../../../errors/AppError";
 import { JwtPayload } from "jsonwebtoken";
-import { unlinkFile } from "../../../shared/unlinkFile"; // adjust your path
+import  unlinkFile  from "../../../shared/unlinkFile"; // adjust your path
 import bcrypt from "bcrypt";
 
 const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
