@@ -7,12 +7,12 @@ import { SubscriptionValidation } from './subscription.validation';
 const router = express.Router();
 
 router.post(
-  '/',
+  '/create-subscription',
   validateRequest(SubscriptionValidation.createSubscriptionZodSchema),
   SubscriptionController.createSubscription
 );
 
-router.get('/', SubscriptionController.getAllSubscriptions);
+router.get('/all-subscription', SubscriptionController.getAllSubscriptions);
 router.get('/:id', SubscriptionController.getSingleSubscription);
 
 router.patch(

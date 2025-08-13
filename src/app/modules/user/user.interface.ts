@@ -86,8 +86,7 @@
 //   isMatchPassword(password: string, hashPassword: string): boolean;
 // } & Model<IUser>;
 
-
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { USER_ROLES } from "../../../enums/user";
 
 export type ProfileData = {
@@ -114,16 +113,17 @@ export type ProfileData = {
   inAppPromotion?: boolean;
   allowRewards?: boolean;
   allowEvents?: boolean;
-  venueTypes?: string[]; // ["Restaurant", "Bar", "Night life"]
+  venueTypes?: string[];
 };
 
 export type SubscriptionData = {
-  planId?: string;
-  isActive: boolean;
+  planId?: string | Types.ObjectId | null;
+  status?: "active" | "expired";
+  isActive?: boolean;
   startDate?: Date;
   endDate?: Date;
   plan?: string;
-  status?: string;
+  expiresAt?: Date;
 };
 
 export type IUser = {
@@ -132,25 +132,25 @@ export type IUser = {
   email: string;
   password: string;
   image?: string;
-  isDeleted: boolean;
-  stripeCustomerId: string;
+  isDeleted?: boolean;
+  stripeCustomerId?: string;
   defaultPaymentMethodId?: string;
-  status: "active" | "blocked";
-  verified: boolean;
+  status?: "active" | "blocked";
+  verified?: boolean;
 
   profileData?: ProfileData;
   subscription?: SubscriptionData;
 
   authentication?: {
-    isResetPassword: boolean;
-    oneTimeCode: number;
-    expireAt: Date;
+    isResetPassword?: boolean;
+    oneTimeCode?: number;
+    expireAt?: Date;
   };
 };
 
-export type UserModel = {
-  isExistUserById(id: string): any;
-  isExistUserByEmail(email: string): any;
-  isExistUserByPhone(contact: string): any;
-  isMatchPassword(password: string, hashPassword: string): boolean;
-} & Model<IUser>;
+export type UserModel = Model<IUser> & {
+  isExistUserById(id: string): Promise<IUser | null>;
+  isExistUserByEmail(email: string): Promise<IUser | null>;
+  isExistUserByPhone(contact: string): Promise<IUser | null>;
+  isMatchPassword(password: string, hashPassword: string): Promise<boolean>;
+};

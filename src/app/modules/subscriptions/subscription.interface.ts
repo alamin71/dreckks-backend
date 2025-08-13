@@ -2,7 +2,7 @@ export interface ISubscription {
   title: string;
   billingCycle: 'monthly' | 'quarterly' | 'yearly';
   price: number;
-  category: 'user' | 'hospitality venue' | 'service provider';
+  category: 'USER' | 'HOSPITALITY_VENUE' | 'SERVICE_PROVIDER';
   features: string[];
    planId?: string | null;
    startDate?: Date | null;

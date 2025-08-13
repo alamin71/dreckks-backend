@@ -260,6 +260,7 @@ const userSchema = new Schema<IUser, UserModel>(
     status: { type: String, enum: ["active", "blocked"], default: "active" },
     verified: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
+    
 
     stripeCustomerId: { type: String, default: "" },
     defaultPaymentMethodId: { type: String, default: "" },
@@ -298,6 +299,8 @@ const userSchema = new Schema<IUser, UserModel>(
       endDate: { type: Date, default: null },
       plan: { type: String },
       status: { type: String },
+      expiresAt: { type: Date }
+      
     },
 
     authentication: {
