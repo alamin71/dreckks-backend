@@ -4,7 +4,8 @@ import router from "./routes";
 import { Morgan } from "./shared/morgan";
 import globalErrorHandler from "./globalErrorHandler/globalErrorHandler";
 import { notFound } from "./app/middleware/notFound";
-import { welcome } from "../src/utils/welcome";
+// import { welcome } from "../src/utils/welcome";
+
 import config from "./config";
 import path from "path";
 import stripeWebhook from './app/modules/payments/stripeWebhook';
@@ -34,10 +35,12 @@ app.use(express.static("public"));
 //router
 app.use("/api/v1", router);
 //live response
+// app.get("/", (req: Request, res: Response) => {
+//   res.send(welcome());
+// });
 app.get("/", (req: Request, res: Response) => {
-  res.send(welcome());
+  res.send('server is running');
 });
-
 //global error handle
 app.use(globalErrorHandler);
 
