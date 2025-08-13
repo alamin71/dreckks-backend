@@ -1,7 +1,7 @@
 export enum CategoryEnum {
-  USER = 'user',
-  HOSPITALITY_VENUE = 'hospitality venue',
-  SERVICE_PROVIDER = 'service provider',
+  USER = 'USER',
+  HOSPITALITY_VENUE = 'HOSPITALITY_VENUE',
+  SERVICE_PROVIDER = 'SERVICE_PROVIDER',
 }
 
 export enum BillingCycleEnum {

@@ -3,8 +3,8 @@ import { User } from "./user.model";
 import { IUser } from "./user.interface";
 import AppError from "../../../errors/AppError";
 import { JwtPayload } from "jsonwebtoken";
-import  unlinkFile  from "../../../shared/unlinkFile"; // adjust your path
-import bcrypt from "bcrypt";
+// import  unlinkFile  from "../../../shared/unlinkFile"; // adjust your path
+// import bcrypt from "bcrypt";
 
 const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   const newUser = await User.create(payload);
@@ -36,9 +36,9 @@ const updateProfileToDB = async (
   if (!isExistUser) throw new AppError(StatusCodes.BAD_REQUEST, "User doesn't exist");
 
   // Unlink old image if new image provided
-  if (payload.image && isExistUser.image) {
-    unlinkFile(isExistUser.image);
-  }
+  // if (payload.image && isExistUser.image) {
+  //   unlinkFile(isExistUser.image);
+  // }
 
   const updatedUser: IUser | null = await User.findOneAndUpdate({ _id: id }, payload, {
     new: true,
