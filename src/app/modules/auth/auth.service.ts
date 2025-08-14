@@ -468,7 +468,7 @@ export const signupInit = async (payload: SignupPayload) => {
   const existing = await User.isExistUserByEmail(email);
   if (existing) throw new AppError(StatusCodes.CONFLICT, 'Email already exists');
 
-  const otp = generateOTP(6);
+  const otp = generateOTP(4);
 
   // Temporary store
   tempSignupStore[email] = {
@@ -614,7 +614,7 @@ export const resendSignupOtp = async (signupToken: string) => {
   const tempData = tempSignupStore[email];
   if (!tempData) throw new AppError(StatusCodes.BAD_REQUEST, 'Signup session expired');
 
-  const otp = generateOTP(6);
+  const otp = generateOTP(4);
   tempData.otp = otp;
   tempData.expireAt = Date.now() + 10 * 60 * 1000;
 
@@ -631,7 +631,7 @@ export const forgotPassword = async (email: string) => {
   const user = await User.findOne({ email });
   if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
 
-  const otp = generateOTP(6);
+  const otp = generateOTP(4);
   user.authentication = { oneTimeCode: otp, expireAt: new Date(Date.now() + 10 * 60 * 1000), isResetPassword: true };
   await user.save();
 
