@@ -13,7 +13,7 @@ const createSignupZodSchema = z.object({
 // Verify OTP
 const createVerifyOtpZodSchema = z.object({
   email: z.string().email({ message: "Valid email is required" }),
-  otp: z.string().length(6, { message: "OTP must be 6 digits" }),
+  otp: z.string().length(4, { message: "OTP must be 6 digits" }),
 });
 
 // Login

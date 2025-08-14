@@ -26,8 +26,8 @@ const router = express.Router();
 
 // Signup
 router.post('/signup/init', validateRequest(AuthValidation.createSignupZodSchema), AuthController.signupInitController);
-router.post('/signup/verify-otp', validateRequest(AuthValidation.createVerifyOtpZodSchema), AuthController.signupVerifyOtpController);
-router.post('/signup/resend-otp', AuthController.resendSignupOtp);
+router.post('/verify-otp', validateRequest(AuthValidation.createVerifyOtpZodSchema), AuthController.signupVerifyOtpController);
+router.post('/resend-otp', AuthController.resendSignupOtp);
 
 // Login
 router.post('/login', validateRequest(AuthValidation.createLoginZodSchema), AuthController.login);

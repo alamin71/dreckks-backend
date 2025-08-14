@@ -100,14 +100,14 @@ const createRefreshToken = (payload: object) => {
 // Create Reset Password Token
 const createResetPasswordToken = (payload: object) => {
   const options: SignOptions = { 
-    expiresIn: "10m" // 10 মিনিটের জন্য
+    expiresIn: "10m"
   };
   return jwt.sign(payload, getSecret(config.jwt.jwt_reset_password_secret), options);
 };
 
 // ---- New: Signup Token ----
 const createSignupToken = (payload: object) => {
-  const options: SignOptions = { expiresIn: "10m" }; // 10 মিনিটের জন্য
+  const options: SignOptions = { expiresIn: "10m" }; 
   return jwt.sign(payload, getSecret(config.jwt.jwt_signup_secret), options);
 };
 
