@@ -222,9 +222,9 @@ export const signupInitController = catchAsync(async (req: Request, res: Respons
 });
 
 export const signupVerifyOtpController = catchAsync(async (req: Request, res: Response) => {
-  const signupToken = req.headers['x-signup-token'] as string;
+  const token = req.headers.token as string;
   const { otp } = req.body;
-  const result = await AuthService.signupVerifyOtp(signupToken, otp);
+  const result = await AuthService.signupVerifyOtp(token, otp);
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
