@@ -30,12 +30,12 @@ router.post('/verify-otp', validateRequest(AuthValidation.createVerifyOtpZodSche
 router.post('/resend-otp', AuthController.resendSignupOtp);
 
 // Login
-router.post('/login', validateRequest(AuthValidation.createLoginZodSchema), AuthController.login);
-router.post('/refresh-token', validateRequest(AuthValidation.createRefreshTokenZodSchema), AuthController.refreshToken);
+router.post('/login', validateRequest(AuthValidation.createLoginZodSchema), AuthController.loginController);
+router.post('/refresh-token', validateRequest(AuthValidation.createRefreshTokenZodSchema), AuthController.refreshTokenController);
 
 // Forgot / Reset / Change Password
-router.post('/forgot-password', validateRequest(AuthValidation.createForgotPasswordZodSchema), AuthController.forgotPassword);
-router.patch('/reset-password', validateRequest(AuthValidation.createResetPasswordZodSchema), AuthController.resetPassword);
-router.post('/change-password', validateRequest(AuthValidation.createChangePasswordZodSchema), AuthController.changePassword);
+router.post('/forgot-password', validateRequest(AuthValidation.createForgotPasswordZodSchema), AuthController.forgotPasswordController);
+router.patch('/reset-password', validateRequest(AuthValidation.createResetPasswordZodSchema), AuthController.resetPasswordController);
+router.post('/change-password', validateRequest(AuthValidation.createChangePasswordZodSchema), AuthController.changePasswordController);
 
 export default router;

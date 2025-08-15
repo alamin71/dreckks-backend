@@ -204,74 +204,172 @@
 //   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message });
 // });
 
+// import { Request, Response } from 'express';
+// import catchAsync from '../../../shared/catchAsync';
+// import sendResponse from '../../../shared/sendResponse';
+// import * as AuthService from './auth.service';
+// import { StatusCodes } from 'http-status-codes';
+
+// // Signup
+// export const signupInitController = catchAsync(async (req: Request, res: Response) => {
+//   const result = await AuthService.signupInit(req.body);
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: StatusCodes.CREATED,
+//     message: result.message,
+//     data: { signupToken: result.signupToken, expiresIn: result.expiresIn, ...(process.env.NODE_ENV === 'development' && { otp: result.otp }) },
+//   });
+// });
+
+// export const signupVerifyOtpController = catchAsync(async (req: Request, res: Response) => {
+//   const token = req.headers.token as string;
+//   const { otp } = req.body;
+//   const result = await AuthService.signupVerifyOtp(token, otp);
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: StatusCodes.OK,
+//     message: result.message,
+//     data: { accessToken: result.accessToken, refreshToken: result.refreshToken, user: result.user },
+//   });
+// });
+
+// // Login
+// export const login = catchAsync(async (req: Request, res: Response) => {
+//   const { email, password } = req.body;
+//   const result = await AuthService.login(email, password);
+//   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message, data: result });
+// });
+
+// // Refresh token
+// export const refreshToken = catchAsync(async (req: Request, res: Response) => {
+//   const { refreshToken } = req.body;
+//   const result = await AuthService.refreshAccessToken(refreshToken);
+//   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: 'New access token', data: result });
+// });
+
+// // Resend OTP
+// export const resendSignupOtp = catchAsync(async (req: Request, res: Response) => {
+//   const signupToken = req.headers['x-signup-token'] as string;
+//   const result = await AuthService.resendSignupOtp(signupToken);
+//   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message, data: result });
+// });
+
+// // Forgot password
+// export const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+//   const { email } = req.body;
+//   const result = await AuthService.forgotPassword(email);
+//   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message, data: result });
+// });
+
+// // Reset password
+// export const resetPassword = catchAsync(async (req: Request, res: Response) => {
+//   const { email, otp, newPassword } = req.body;
+//   const result = await AuthService.resetPasswordWithOtp(email, otp, newPassword);
+//   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message });
+// });
+
+// // Change password
+// export const changePassword = catchAsync(async (req: Request, res: Response) => {
+//   const user = req.user!;
+//   const { currentPassword, newPassword } = req.body;
+//   const result = await AuthService.changePassword(user.id, currentPassword, newPassword);
+//   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message });
+// });
 import { Request, Response } from 'express';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import * as AuthService from './auth.service';
 import { StatusCodes } from 'http-status-codes';
+import AppError from '../../../errors/AppError';
 
-// Signup
+// -------------------- Signup --------------------
 export const signupInitController = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.signupInit(req.body);
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.CREATED,
     message: result.message,
-    data: { signupToken: result.signupToken, expiresIn: result.expiresIn, ...(process.env.NODE_ENV === 'development' && { otp: result.otp }) },
+    data: { email: result.email, role: result.role, profileData: result.profileData, ...(process.env.NODE_ENV === 'development' && { otp: result.otp }) },
   });
 });
 
 export const signupVerifyOtpController = catchAsync(async (req: Request, res: Response) => {
-  const token = req.headers.token as string;
-  const { otp } = req.body;
-  const result = await AuthService.signupVerifyOtp(token, otp);
+  const { email, otp } = req.body;
+  if (!email || !otp) throw new AppError(StatusCodes.BAD_REQUEST, 'Email and OTP are required');
+
+  const result = await AuthService.signupVerifyOtp(email, otp);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'OTP verified successfully',
+    data: result,
+  });
+});
+
+// --------------------Resend OTP --------------------
+export const resendSignupOtp = catchAsync(async (req: Request, res: Response) => {
+  const signupToken = req.headers['x-signup-token'] as string;
+  if (!signupToken) throw new AppError(400, 'Signup token missing');
+
+  const result = await AuthService.resendSignupOtp(signupToken);
+
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
     message: result.message,
-    data: { accessToken: result.accessToken, refreshToken: result.refreshToken, user: result.user },
+    data: result,
   });
 });
 
-// Login
-export const login = catchAsync(async (req: Request, res: Response) => {
+
+// -------------------- Login --------------------
+export const loginController = catchAsync(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const result = await AuthService.login(email, password);
   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message, data: result });
 });
 
-// Refresh token
-export const refreshToken = catchAsync(async (req: Request, res: Response) => {
+// -------------------- Refresh Token --------------------
+export const refreshTokenController = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
   const result = await AuthService.refreshAccessToken(refreshToken);
   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: 'New access token', data: result });
 });
 
-// Resend OTP
-export const resendSignupOtp = catchAsync(async (req: Request, res: Response) => {
-  const signupToken = req.headers['x-signup-token'] as string;
-  const result = await AuthService.resendSignupOtp(signupToken);
-  sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message, data: result });
-});
-
-// Forgot password
-export const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+// -------------------- Forgot Password --------------------
+export const forgotPasswordController = catchAsync(async (req: Request, res: Response) => {
   const { email } = req.body;
   const result = await AuthService.forgotPassword(email);
-  sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message, data: result });
+  sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message, ...(process.env.NODE_ENV === 'development' && { otp: result.otp }) });
 });
 
-// Reset password
-export const resetPassword = catchAsync(async (req: Request, res: Response) => {
-  const { email, otp, newPassword } = req.body;
-  const result = await AuthService.resetPasswordWithOtp(email, otp, newPassword);
+// -------------------- Verify Forgot Password OTP --------------------
+export const verifyForgotPasswordOtpController = catchAsync(async (req: Request, res: Response) => {
+  const { email, otp } = req.body;
+  const result = await AuthService.verifyForgotPasswordOtp(email, otp);
+  sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: 'OTP verified', data: { resetToken: result.resetToken } });
+});
+
+// -------------------- Reset Password --------------------
+export const resetPasswordController = catchAsync(async (req: Request, res: Response) => {
+  const resetToken = req.headers['x-reset-token'] as string;
+  const { newPassword, confirmPassword } = req.body;
+
+  if (!newPassword || !confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'Both passwords are required');
+  if (newPassword !== confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'Passwords do not match');
+
+  const result = await AuthService.resetPasswordWithToken(resetToken, newPassword);
   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message });
 });
 
-// Change password
-export const changePassword = catchAsync(async (req: Request, res: Response) => {
+// -------------------- Change Password --------------------
+export const changePasswordController = catchAsync(async (req: Request, res: Response) => {
   const user = req.user!;
-  const { currentPassword, newPassword } = req.body;
-  const result = await AuthService.changePassword(user.id, currentPassword, newPassword);
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+
+  if (!oldPassword || !newPassword || !confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'All fields are required');
+  if (newPassword !== confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'Passwords do not match');
+
+  const result = await AuthService.changePassword(user.id, oldPassword, newPassword);
   sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message });
 });

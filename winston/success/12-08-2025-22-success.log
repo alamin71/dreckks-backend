@@ -1,4 +1,0 @@
-Tue Aug 12 2025 22:5:41 [SERVER-NAME] info: 127.0.0.1 - POST /api/v1/auth/resend-otp 200 - 1599.987 ms
-Tue Aug 12 2025 22:7:52 [SERVER-NAME] info: 127.0.0.1 - POST /api/v1/auth/resend-otp 200 - 1480.109 ms
-Tue Aug 12 2025 22:32:11 [SERVER-NAME] warn: [33mMongoDB disconnected. Attempting to reconnect...[39m
-Tue Aug 12 2025 22:32:11 [SERVER-NAME] info: [32mMongoDB reconnected successfully[39m
