@@ -848,7 +848,8 @@ export const signupInit = async (payload: SignupPayload) => {
   const newUser = await User.create({
     name: payload.name,
     email: payload.email,
-    password: hashedPassword,
+    // password: hashedPassword,
+    password: payload.password,
     role: assignRole,
     profileData,
     verified: false,
