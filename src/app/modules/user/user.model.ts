@@ -253,7 +253,7 @@ const userSchema = new Schema<IUser, UserModel>(
       enum: Object.values(USER_ROLES),
       default: USER_ROLES.USER,
     },
-    name: { type: String, required: true, unique: true, lowercase: true },
+    name: { type: String, required: true, unique: false, lowercase: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true, select: false, minlength: 8 },
     image: { type: String, default: "" },
