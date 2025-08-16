@@ -179,13 +179,29 @@ export const forgotPassword = async (email: string) => {
   const user = await User.findOne({ email });
   if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
 
+  // OTP generate
   const otp = generateOTP(4);
-  user.authentication = { oneTimeCode: otp, expireAt: new Date(Date.now() + 10 * 60 * 1000), isResetPassword: true };
-  await user.save();
-  await emailHelper.sendEmail(emailTemplate.resetPassword({ otp, email: user.email }));
 
-  return { message: 'OTP sent to email', otp };
+  user.authentication = {
+    oneTimeCode: otp,
+    expireAt: new Date(Date.now() + 10 * 60 * 1000), 
+    isResetPassword: true,
+  };
+  await user.save();
+
+  // Send email
+  await emailHelper.sendEmail(
+    emailTemplate.resetPassword({ otp, email: user.email })
+  );
+
+  const response: any = { message: 'OTP sent to email' };
+  if (process.env.NODE_ENV === 'development') {
+    response.otp = otp; 
+  }
+
+  return response;
 };
+
 
 // -------------------- Verify Forgot Password OTP --------------------
 export const verifyForgotPasswordOtp = async (email: string, otp: string) => {
