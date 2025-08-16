@@ -35,6 +35,7 @@ router.post('/refresh-token', validateRequest(AuthValidation.createRefreshTokenZ
 
 // Forgot / Reset / Change Password
 router.post('/forgot-password', validateRequest(AuthValidation.createForgotPasswordZodSchema), AuthController.forgotPasswordController);
+router.post('/verify-forgot-password-otp', validateRequest(AuthValidation.createForgotPasswordZodSchema), AuthController.verifyForgotPasswordOtpController);
 router.patch('/reset-password', validateRequest(AuthValidation.createResetPasswordZodSchema), AuthController.resetPasswordController);
 router.post('/change-password', validateRequest(AuthValidation.createChangePasswordZodSchema), AuthController.changePasswordController);
 

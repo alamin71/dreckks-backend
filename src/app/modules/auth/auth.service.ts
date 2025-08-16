@@ -150,7 +150,7 @@ export const login = async (email: string, password: string) => {
   const accessToken = jwtHelper.createAccessToken(payload);
   const refreshToken = jwtHelper.createRefreshToken(payload);
 
-  // Full user object (password বাদ দিয়ে)
+  // Full user object 
   const { password: _, ...userData } = user.toObject();
 
   return {
@@ -179,29 +179,22 @@ export const forgotPassword = async (email: string) => {
   const user = await User.findOne({ email });
   if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
 
-  // OTP generate
   const otp = generateOTP(4);
 
   user.authentication = {
     oneTimeCode: otp,
-    expireAt: new Date(Date.now() + 10 * 60 * 1000), 
+    expireAt: new Date(Date.now() + 10 * 60 * 1000),
     isResetPassword: true,
   };
   await user.save();
 
-  // Send email
-  await emailHelper.sendEmail(
-    emailTemplate.resetPassword({ otp, email: user.email })
-  );
+  await emailHelper.sendEmail(emailTemplate.resetPassword({ otp, email: user.email }));
 
   const response: any = { message: 'OTP sent to email' };
-  if (process.env.NODE_ENV === 'development') {
-    response.otp = otp; 
-  }
+  if (process.env.NODE_ENV === 'development') response.otp = otp; // dev mode এ OTP দেখাবে
 
   return response;
 };
-
 
 // -------------------- Verify Forgot Password OTP --------------------
 export const verifyForgotPasswordOtp = async (email: string, otp: string) => {
@@ -209,29 +202,38 @@ export const verifyForgotPasswordOtp = async (email: string, otp: string) => {
   if (!user || !user.authentication) throw new AppError(StatusCodes.NOT_FOUND, 'User or OTP not found');
 
   if (String(user.authentication.oneTimeCode) !== otp) throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid OTP');
-  if (user.authentication.expireAt && new Date() > new Date(user.authentication.expireAt)) throw new AppError(StatusCodes.BAD_REQUEST, 'OTP expired');
+  if (user.authentication.expireAt && new Date() > new Date(user.authentication.expireAt))
+    throw new AppError(StatusCodes.BAD_REQUEST, 'OTP expired');
 
+  // OTP valid হলে reset token generate
   const resetToken = jwtHelper.createResetPasswordToken({ email: user.email });
+
   return { resetToken };
 };
 
 // -------------------- Reset Password --------------------
-export const resetPasswordWithToken = async (resetToken: string, newPassword: string) => {
+export const resetPasswordWithToken = async (resetToken: string, newPassword: string, confirmPassword: string) => {
   if (!resetToken) throw new AppError(StatusCodes.UNAUTHORIZED, 'Reset token is required');
 
+  if (newPassword !== confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'Passwords do not match');
+
   let decoded: any;
-  try { decoded = jwtHelper.verifyResetPasswordToken(resetToken); }
-  catch { throw new AppError(StatusCodes.UNAUTHORIZED, 'Invalid or expired reset token'); }
+  try {
+    decoded = jwtHelper.verifyResetPasswordToken(resetToken);
+  } catch {
+    throw new AppError(StatusCodes.UNAUTHORIZED, 'Invalid or expired reset token');
+  }
 
   const user = await User.findOne({ email: decoded.email }).select('+password +authentication');
   if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
 
   user.password = await bcrypt.hash(newPassword, Number(config.bcrypt_salt_rounds));
-  user.authentication = undefined;
+  user.authentication = undefined; // OTP invalidate
   await user.save();
 
   return { message: 'Password reset successfully' };
 };
+
 
 // -------------------- Change Password --------------------
 export const changePassword = async (userId: string, oldPassword: string, newPassword: string) => {

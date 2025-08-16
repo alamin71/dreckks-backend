@@ -443,19 +443,35 @@ export const refreshTokenController = catchAsync(async (req: Request, res: Respo
 });
 
 // -------------------- Forgot Password --------------------
+// -------------------- Forgot Password --------------------
 export const forgotPasswordController = catchAsync(async (req: Request, res: Response) => {
   const { email } = req.body;
   const result = await AuthService.forgotPassword(email);
-  sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message, ...(process.env.NODE_ENV === 'development' && { otp: result.otp }) });
+
+  // Response with OTP in dev environment
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'OTP sent to email',
+    data: result, // { otp } included in dev
+  });
 });
 
 // -------------------- Verify Forgot Password OTP --------------------
 export const verifyForgotPasswordOtpController = catchAsync(async (req: Request, res: Response) => {
-  const { email, otp } = req.body;
-  if (!email || !otp) throw new AppError(StatusCodes.BAD_REQUEST, 'Email and OTP are required');
+  const { otp } = req.body; // only otp in body
+  const { email } = req.query as { email: string }; // email passed as query param
 
-  const result = await AuthService.verifyForgotPasswordOtp(email, otp);
-  sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: 'OTP verified', data: { resetToken: result.resetToken } });
+  const { resetToken } = await AuthService.verifyForgotPasswordOtp(email, otp);
+
+  // Set reset token in headers
+  res.setHeader('x-reset-token', resetToken);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'OTP verified successfully. You can now reset your password.',
+  });
 });
 
 // -------------------- Reset Password --------------------
@@ -463,12 +479,22 @@ export const resetPasswordController = catchAsync(async (req: Request, res: Resp
   const resetToken = req.headers['x-reset-token'] as string;
   const { newPassword, confirmPassword } = req.body;
 
-  if (!newPassword || !confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'Both passwords are required');
-  if (newPassword !== confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'Passwords do not match');
+  if (!newPassword || !confirmPassword) 
+    throw new AppError(StatusCodes.BAD_REQUEST, 'All fields are required');
 
-  const result = await AuthService.resetPasswordWithToken(resetToken, newPassword);
-  sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message });
+  if (newPassword !== confirmPassword) 
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Passwords do not match');
+
+  await AuthService.resetPasswordWithToken(resetToken, newPassword, confirmPassword);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Password reset successfully. Please login.',
+  });
 });
+
+
 
 // -------------------- Change Password --------------------
 export const changePasswordController = catchAsync(async (req: Request, res: Response) => {
@@ -479,5 +505,10 @@ export const changePasswordController = catchAsync(async (req: Request, res: Res
   if (newPassword !== confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'Passwords do not match');
 
   const result = await AuthService.changePassword(user.id, oldPassword, newPassword);
-  sendResponse(res, { success: true, statusCode: StatusCodes.OK, message: result.message });
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: result.message,
+  });
 });
