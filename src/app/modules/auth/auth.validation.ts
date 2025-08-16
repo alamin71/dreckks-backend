@@ -35,11 +35,13 @@ const createResendOtpZodSchema = z.object({
 const createForgotPasswordZodSchema = z.object({
   email: z.string().email({ message: "Valid email is required" }),
 });
+// Forgot password OTP verification (generates reset token)
+const verifyForgotPasswordOtpZodSchema = z.object({
+  otp: z.string().length(4, { message: "OTP must be 4 digits" }),
+});
 
-// Reset password (with OTP)
-const createResetPasswordZodSchema = z.object({
-  email: z.string().email({ message: "Valid email is required" }),
-  otp: z.string().length(6, { message: "OTP must be 6 digits" }),
+// Reset password (using reset token in headers)
+const resetPasswordZodSchema = z.object({
   newPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z.string().min(6, { message: "Confirm password must be at least 6 characters" }),
 }).refine((data) => data.newPassword === data.confirmPassword, {
@@ -64,6 +66,7 @@ export const AuthValidation = {
   createRefreshTokenZodSchema,
   createResendOtpZodSchema,
   createForgotPasswordZodSchema,
-  createResetPasswordZodSchema,
+  resetPasswordZodSchema,
   createChangePasswordZodSchema,
+  verifyForgotPasswordOtpZodSchema
 };
