@@ -138,7 +138,11 @@ export const resendSignupOtp = async (signupToken: string) => {
 export const login = async (email: string, password: string) => {
   const user = await User.findOne({ email }).select('+password');
   if (!user) throw new AppError(StatusCodes.BAD_REQUEST, 'User not found');
-  if (!(await User.isMatchPassword(password, user.password))) throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid credentials');
+
+  if (!(await User.isMatchPassword(password, user.password))) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid credentials');
+  }
+
   if (!user.verified) throw new AppError(StatusCodes.FORBIDDEN, 'Account not verified');
   if (user.status !== 'active') throw new AppError(StatusCodes.FORBIDDEN, 'Account not active');
 
@@ -146,8 +150,17 @@ export const login = async (email: string, password: string) => {
   const accessToken = jwtHelper.createAccessToken(payload);
   const refreshToken = jwtHelper.createRefreshToken(payload);
 
-  return { message: 'Login successful', user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken, refreshToken };
+  // Full user object (password বাদ দিয়ে)
+  const { password: _, ...userData } = user.toObject();
+
+  return {
+    message: 'Login successful',
+    user: userData, // full user info
+    accessToken,
+    refreshToken,
+  };
 };
+
 
 // -------------------- Refresh Token --------------------
 export const refreshAccessToken = async (refreshToken: string) => {
