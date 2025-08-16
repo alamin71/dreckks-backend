@@ -183,27 +183,38 @@ export const forgotPassword = async (email: string) => {
 
   user.authentication = {
     oneTimeCode: otp,
-    expireAt: new Date(Date.now() + 10 * 60 * 1000),
+    expireAt: new Date(Date.now() + 10 * 60 * 1000), // 10 min
     isResetPassword: true,
   };
   await user.save();
 
+  // OTP Mail পাঠানো
   await emailHelper.sendEmail(emailTemplate.resetPassword({ otp, email: user.email }));
 
   const response: any = { message: 'OTP sent to email' };
-  if (process.env.NODE_ENV === 'development') response.otp = otp; // dev mode এ OTP দেখাবে
+  if (process.env.NODE_ENV === 'development') response.otp = otp; // dev mode এ OTP return করবে
 
   return response;
 };
+
 
 // -------------------- Verify Forgot Password OTP --------------------
 export const verifyForgotPasswordOtp = async (email: string, otp: string) => {
   const user = await User.findOne({ email }).select('+authentication');
   if (!user || !user.authentication) throw new AppError(StatusCodes.NOT_FOUND, 'User or OTP not found');
 
-  if (String(user.authentication.oneTimeCode) !== otp) throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid OTP');
-  if (user.authentication.expireAt && new Date() > new Date(user.authentication.expireAt))
+  // OTP must be for reset password flow
+  if (!user.authentication.isResetPassword) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'OTP not valid for password reset');
+  }
+
+  if (String(user.authentication.oneTimeCode) !== otp) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid OTP');
+  }
+
+  if (user.authentication.expireAt && new Date() > new Date(user.authentication.expireAt)) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'OTP expired');
+  }
 
   // OTP valid হলে reset token generate
   const resetToken = jwtHelper.createResetPasswordToken({ email: user.email });
@@ -211,10 +222,10 @@ export const verifyForgotPasswordOtp = async (email: string, otp: string) => {
   return { resetToken };
 };
 
+
 // -------------------- Reset Password --------------------
 export const resetPasswordWithToken = async (resetToken: string, newPassword: string, confirmPassword: string) => {
   if (!resetToken) throw new AppError(StatusCodes.UNAUTHORIZED, 'Reset token is required');
-
   if (newPassword !== confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'Passwords do not match');
 
   let decoded: any;
@@ -233,6 +244,7 @@ export const resetPasswordWithToken = async (resetToken: string, newPassword: st
 
   return { message: 'Password reset successfully' };
 };
+
 
 
 // -------------------- Change Password --------------------
