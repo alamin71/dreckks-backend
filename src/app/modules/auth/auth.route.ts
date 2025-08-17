@@ -4,6 +4,7 @@
 import express from 'express';
 import * as AuthController from './auth.controller';
 import { AuthValidation } from './auth.validation';
+import auth from '../../middleware/auth';
 import validateRequest from '../../middleware/validateRequest';
 
 const router = express.Router();
@@ -21,6 +22,6 @@ router.post('/refresh-token', validateRequest(AuthValidation.createRefreshTokenZ
 router.post('/forgot-password', validateRequest(AuthValidation.createForgotPasswordZodSchema), AuthController.forgotPasswordController);
 router.post('/verify-forgot-password-otp', validateRequest(AuthValidation.verifyForgotPasswordOtpZodSchema), AuthController.verifyForgotPasswordOtpController);
 router.patch('/reset-password', validateRequest(AuthValidation.resetPasswordZodSchema), AuthController.resetPasswordController);
-router.patch('/change-password', validateRequest(AuthValidation.createChangePasswordZodSchema), AuthController.changePasswordController);
+router.patch('/change-password', auth(), validateRequest(AuthValidation.createChangePasswordZodSchema), AuthController.changePasswordController);
 
 export default router;
