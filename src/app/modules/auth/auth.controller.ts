@@ -71,26 +71,25 @@ export const refreshTokenController = catchAsync(async (req: Request, res: Respo
 // -------------------- Forgot Password --------------------
 export const forgotPasswordController = catchAsync(async (req: Request, res: Response) => {
   const { email } = req.body;
-  const result = await AuthService.forgotPassword(email);
+  const { otp, resetToken } = await AuthService.forgotPassword(email);
 
-  // Response with OTP in dev environment
+  // resetToken send with header
+  res.setHeader("x-reset-token", resetToken);
+
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
     message: 'OTP sent to email',
-    data: result, // { otp } included in dev
+    data: process.env.NODE_ENV === "development" ? { otp, resetToken } : { resetToken },
   });
 });
 
 // -------------------- Verify Forgot Password OTP --------------------
 export const verifyForgotPasswordOtpController = catchAsync(async (req: Request, res: Response) => {
-  const { otp } = req.body; // only otp in body
-  const { email } = req.query as { email: string }; // email passed as query param
+  const resetToken = req.headers['x-reset-token'] as string;
+  const { otp } = req.body;
 
-  const { resetToken } = await AuthService.verifyForgotPasswordOtp(email, otp);
-
-  // Set reset token in headers
-  res.setHeader('x-reset-token', resetToken);
+  await AuthService.verifyForgotPasswordOtp(resetToken, otp);
 
   sendResponse(res, {
     success: true,
@@ -98,6 +97,8 @@ export const verifyForgotPasswordOtpController = catchAsync(async (req: Request,
     message: 'OTP verified successfully. You can now reset your password.',
   });
 });
+
+
 
 // -------------------- Reset Password --------------------
 export const resetPasswordController = catchAsync(async (req: Request, res: Response) => {

@@ -183,29 +183,35 @@ export const forgotPassword = async (email: string) => {
 
   user.authentication = {
     oneTimeCode: otp,
-    expireAt: new Date(Date.now() + 10 * 60 * 1000), // 10 min
+    expireAt: new Date(Date.now() + 10 * 60 * 1000),
     isResetPassword: true,
   };
   await user.save();
 
-  // OTP Mail পাঠানো
+  // reset token generate now
+  const resetToken = jwtHelper.createResetPasswordToken({ email: user.email });
+
   await emailHelper.sendEmail(emailTemplate.resetPassword({ otp, email: user.email }));
 
-  const response: any = { message: 'OTP sent to email' };
-  if (process.env.NODE_ENV === 'development') response.otp = otp; // dev mode এ OTP return করবে
-
-  return response;
+  return { otp, resetToken };
 };
 
-
 // -------------------- Verify Forgot Password OTP --------------------
-export const verifyForgotPasswordOtp = async (email: string, otp: string) => {
-  const user = await User.findOne({ email }).select('+authentication');
-  if (!user || !user.authentication) throw new AppError(StatusCodes.NOT_FOUND, 'User or OTP not found');
+export const verifyForgotPasswordOtp = async (resetToken: string, otp: string) => {
+  if (!resetToken) throw new AppError(StatusCodes.UNAUTHORIZED, "Reset token missing");
 
-  // OTP must be for reset password flow
+  let decoded: any;
+  try {
+    decoded = jwtHelper.verifyResetPasswordToken(resetToken);
+  } catch {
+    throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired reset token");
+  }
+
+  const user = await User.findOne({ email: decoded.email }).select('+authentication');
+  if (!user || !user.authentication) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+
   if (!user.authentication.isResetPassword) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'OTP not valid for password reset');
+    throw new AppError(StatusCodes.BAD_REQUEST, 'OTP not valid for reset');
   }
 
   if (String(user.authentication.oneTimeCode) !== otp) {
@@ -216,10 +222,7 @@ export const verifyForgotPasswordOtp = async (email: string, otp: string) => {
     throw new AppError(StatusCodes.BAD_REQUEST, 'OTP expired');
   }
 
-  // OTP valid হলে reset token generate
-  const resetToken = jwtHelper.createResetPasswordToken({ email: user.email });
-
-  return { resetToken };
+  return { message: "OTP verified" };
 };
 
 
