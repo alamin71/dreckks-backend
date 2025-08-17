@@ -51,7 +51,7 @@ const resetPasswordZodSchema = z.object({
 
 // Change password (protected)
 const createChangePasswordZodSchema = z.object({
-  currentPassword: z.string().nonempty({ message: "Current password is required" }),
+  oldPassword: z.string().nonempty({ message: "oldPassword is required" }),
   newPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z.string().min(6, { message: "Confirm password must be at least 6 characters" }),
 }).refine((data) => data.newPassword === data.confirmPassword, {
