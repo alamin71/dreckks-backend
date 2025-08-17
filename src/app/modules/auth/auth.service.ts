@@ -61,12 +61,11 @@ export const signupInit = async (payload: SignupPayload) => {
     ...roleProfileData,
   };
 
-  const hashedPassword = await bcrypt.hash(payload.password, Number(config.bcrypt_salt_rounds));
+  
 
   const newUser = await User.create({
     name: payload.name,
     email: payload.email,
-    // password: hashedPassword,
     password: payload.password,
     role: assignRole,
     profileData,
@@ -227,7 +226,11 @@ export const verifyForgotPasswordOtp = async (resetToken: string, otp: string) =
 
 
 // -------------------- Reset Password --------------------
-export const resetPasswordWithToken = async (resetToken: string, newPassword: string, confirmPassword: string) => {
+export const resetPasswordWithToken = async (
+  resetToken: string,
+  newPassword: string,
+  confirmPassword: string
+) => {
   if (!resetToken) throw new AppError(StatusCodes.UNAUTHORIZED, 'Reset token is required');
   if (newPassword !== confirmPassword) throw new AppError(StatusCodes.BAD_REQUEST, 'Passwords do not match');
 
@@ -241,14 +244,12 @@ export const resetPasswordWithToken = async (resetToken: string, newPassword: st
   const user = await User.findOne({ email: decoded.email }).select('+password +authentication');
   if (!user) throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
 
-  user.password = await bcrypt.hash(newPassword, Number(config.bcrypt_salt_rounds));
+  user.password = newPassword; // ✅ hook will hash automatically
   user.authentication = undefined; // OTP invalidate
   await user.save();
 
   return { message: 'Password reset successfully' };
 };
-
-
 
 // -------------------- Change Password --------------------
 export const changePassword = async (userId: string, oldPassword: string, newPassword: string) => {
@@ -258,11 +259,12 @@ export const changePassword = async (userId: string, oldPassword: string, newPas
   const isMatch = await User.isMatchPassword(oldPassword, user.password);
   if (!isMatch) throw new AppError(StatusCodes.BAD_REQUEST, 'Old password is incorrect');
 
-  user.password = await bcrypt.hash(newPassword, Number(config.bcrypt_salt_rounds));
+  user.password = newPassword; // ✅ hook will hash automatically
   await user.save();
 
   return { message: 'Password changed successfully' };
 };
+
 
 // -------------------- Helper for Controller --------------------
 export const verifySignupToken = (token: string) => {
