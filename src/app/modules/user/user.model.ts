@@ -1,6 +1,3 @@
-
-
-
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import { model, Schema } from "mongoose";
@@ -16,14 +13,13 @@ const userSchema = new Schema<IUser, UserModel>(
       enum: Object.values(USER_ROLES),
       default: USER_ROLES.USER,
     },
-    name: { type: String, required: true, unique: false, lowercase: true },
+    name: { type: String, required: true, lowercase: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true, select: false, minlength: 8 },
     image: { type: String, default: "" },
     status: { type: String, enum: ["active", "blocked"], default: "active" },
     verified: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
-    
 
     stripeCustomerId: { type: String, default: "" },
     defaultPaymentMethodId: { type: String, default: "" },
@@ -62,8 +58,7 @@ const userSchema = new Schema<IUser, UserModel>(
       endDate: { type: Date, default: null },
       plan: { type: String },
       status: { type: String },
-      expiresAt: { type: Date }
-      
+      expiresAt: { type: Date },
     },
 
     authentication: {
