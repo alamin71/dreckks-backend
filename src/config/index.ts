@@ -19,8 +19,8 @@ export default {
     jwt_expire_in: process.env.JWT_EXPIRE_IN,
     jwt_refresh_secret: process.env.JWT_REFRESH_SECRET,
     jwt_refresh_expire_in: process.env.JWT_REFRESH_EXPIRE_IN,
-     jwt_signup_secret: process.env.JWT_SIGNUP_SECRET,
-    jwt_reset_password_secret: process.env.JWT_RESET_PASSWORD_SECRET
+    jwt_signup_secret: process.env.JWT_SIGNUP_SECRET,
+    jwt_reset_password_secret: process.env.JWT_RESET_PASSWORD_SECRET,
   },
 
   email: {
@@ -31,7 +31,7 @@ export default {
     host: process.env.EMAIL_HOST,
     pass: process.env.EMAIL_PASS,
   },
-  
+
   express_sessoin: process.env.EXPRESS_SESSION_SECRET_KEY,
   social: {
     google_client_id: process.env.GOOGLE_CLIENT_ID,
@@ -55,5 +55,11 @@ export default {
   super_admin: {
     email: process.env.SUPER_ADMIN_EMAIL,
     password: process.env.SUPER_ADMIN_PASSWORD,
+  },
+  aws: {
+    region: process.env.region,
+    accessKeyId: process.env.accessKeyId,
+    secretAccessKey: process.env.secretAccessKey,
+    bucket: process.env.AWS_BUCKET_NAME,
   },
 };

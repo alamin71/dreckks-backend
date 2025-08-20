@@ -101,16 +101,17 @@
 //   createBusinessUserZodSchema,
 // };
 // user.validation.ts
-import { z } from 'zod';
+import { z } from "zod";
 
 export const createUserZodSchema = z.object({
   body: z.object({
-    name: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
     email: z.string().email(),
     password: z.string().min(6),
   }),
 });
- const otpVerifyZodSchema = z.object({
+const otpVerifyZodSchema = z.object({
   body: z.object({
     email: z.string().email(),
     otp: z.string().length(4),
@@ -148,20 +149,20 @@ const changePasswordZodSchema = z.object({
 const updateUserZodSchema = z.object({
   body: z.object({
     name: z.string().optional(),
-   contact: z.string().optional(),
-   address: z.string().optional(),
-   email: z.string().email("Invalid email address").optional(),
+    contact: z.string().optional(),
+    address: z.string().optional(),
+    email: z.string().email("Invalid email address").optional(),
     password: z.string().optional(),
-   image: z.string().optional(),
+    image: z.string().optional(),
   }),
- });
+});
 
 export const UserValidation = {
-createUserZodSchema,
- otpVerifyZodSchema,
- resendOtpZodSchema,
-forgotPasswordZodSchema,
-resetPasswordZodSchema,
-changePasswordZodSchema,
-updateUserZodSchema
- };
+  createUserZodSchema,
+  otpVerifyZodSchema,
+  resendOtpZodSchema,
+  forgotPasswordZodSchema,
+  resetPasswordZodSchema,
+  changePasswordZodSchema,
+  updateUserZodSchema,
+};
