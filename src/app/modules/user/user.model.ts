@@ -161,12 +161,14 @@ const userSchema = new Schema<IUser, UserModel>(
       weight: { type: Number, default: null },
       gender: { type: String, enum: Object.values(GENDER), default: "" }, // ✅ enum
 
-      // Service Provider specific
       designation: {
         type: String,
         enum: Object.values(DESIGNATION),
-        default: "",
-      }, // ✅ enum
+        required: function () {
+          return this.role === USER_ROLES.SERVICE_PROVIDER;
+        },
+      },
+
       resumeUrl: { type: String, default: "" },
 
       // Hospitality Venue specific
