@@ -11,7 +11,8 @@ import { USER_ROLES } from "../../../enums/user";
 
 // -------------------- Signup --------------------
 type SignupPayload = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   role?: string;
@@ -63,7 +64,8 @@ export const signupInit = async (payload: SignupPayload) => {
   };
 
   const newUser = await User.create({
-    name: payload.name,
+    firstName: payload.firstName,
+    lastName: payload.lastName,
     email: payload.email,
     password: payload.password,
     role: assignRole,
