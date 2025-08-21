@@ -1,11 +1,11 @@
-
 import { z } from "zod";
 
 // Signup
 const createSignupZodSchema = z.object({
-  name: z.string().nonempty({ message: "Name is required" }),
   email: z.string().email({ message: "Valid email is required" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
   role: z.string().optional(),
   profileData: z.record(z.string(), z.any()).optional(),
 });
@@ -41,23 +41,35 @@ const verifyForgotPasswordOtpZodSchema = z.object({
 });
 
 // Reset password (using reset token in headers)
-const resetPasswordZodSchema = z.object({
-  newPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
-  confirmPassword: z.string().min(6, { message: "Confirm password must be at least 6 characters" }),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+const resetPasswordZodSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters" }),
+    confirmPassword: z
+      .string()
+      .min(6, { message: "Confirm password must be at least 6 characters" }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 // Change password (protected)
-const createChangePasswordZodSchema = z.object({
-  oldPassword: z.string().nonempty({ message: "oldPassword is required" }),
-  newPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
-  confirmPassword: z.string().min(6, { message: "Confirm password must be at least 6 characters" }),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+const createChangePasswordZodSchema = z
+  .object({
+    oldPassword: z.string().nonempty({ message: "oldPassword is required" }),
+    newPassword: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters" }),
+    confirmPassword: z
+      .string()
+      .min(6, { message: "Confirm password must be at least 6 characters" }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export const AuthValidation = {
   createSignupZodSchema,
@@ -68,5 +80,5 @@ export const AuthValidation = {
   createForgotPasswordZodSchema,
   resetPasswordZodSchema,
   createChangePasswordZodSchema,
-  verifyForgotPasswordOtpZodSchema
+  verifyForgotPasswordOtpZodSchema,
 };
