@@ -33,7 +33,7 @@ const userSchema = new Schema<IUser, UserModel>(
       lastName: { type: String, default: "" },
       age: { type: Number, default: null },
       weight: { type: Number, default: null },
-      sex: { type: String, default: "" },
+      gender: { type: String, default: "" },
 
       // Service Provider specific
       designation: { type: String, default: "" },
