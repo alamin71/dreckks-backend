@@ -68,7 +68,7 @@ export const uploadFromUrlToS3 = async (
   const command = new PutObjectCommand({
     Bucket: config.aws.bucket!,
     Key: fileName,
-    Body: response.data,
+    Body: response.data as Buffer,
     ContentType: "image/png",
     // ACL: "public-read", // use only if bucket policy allows
   });

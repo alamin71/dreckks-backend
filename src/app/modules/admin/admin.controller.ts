@@ -48,7 +48,9 @@ import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { Admin } from "./../admin/admin.model";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
+
 import config from "../../../config";
 import { adminService } from "./admin.service";
 import AppError from "../../../errors/AppError";
@@ -66,7 +68,7 @@ const adminLogin = catchAsync(async (req: Request, res: Response) => {
   const token = jwt.sign(
     { id: admin._id, role: admin.role },
     config.jwt.jwt_secret as string,
-    { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+    { expiresIn: process.env.JWT_EXPIRES_IN || "1d" } as SignOptions
   );
 
   sendResponse(res, {
@@ -158,9 +160,13 @@ const verifyOtp = catchAsync(async (req: Request, res: Response) => {
   otpStore.delete(otp.toString()); // optional cleanup
   verifiedAdmins.set(email, "VERIFIED");
 
-  const token = jwt.sign({ email }, config.jwt_access_secret as string, {
-    expiresIn: "15m",
-  });
+  const token = jwt.sign(
+    { email },
+    config.jwt.jwt_secret as string,
+    {
+      expiresIn: "15m",
+    } as SignOptions
+  );
 
   sendResponse(res, {
     statusCode: 200,
