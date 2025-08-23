@@ -169,10 +169,19 @@ export const login = async (email: string, password: string) => {
     throw new AppError(StatusCodes.BAD_REQUEST, "password is incorrect");
   }
 
-  if (!user.verified)
-    throw new AppError(StatusCodes.FORBIDDEN, "Account not verified");
-  if (user.status !== "ACTIVE")
-    throw new AppError(StatusCodes.FORBIDDEN, "Account not active");
+  if (!user.verified) {
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      "Account not verified. Please verify OTP first."
+    );
+  }
+
+  if (!user.subscription?.isActive || user.subscription?.status !== "ACTIVE") {
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      "Your subscription is pending admin approval."
+    );
+  }
 
   // SUBSCRIPTION GATE (admin approval required)
   const sub: any = (user as any).subscription || {};
