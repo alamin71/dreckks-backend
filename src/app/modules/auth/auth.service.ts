@@ -37,7 +37,7 @@ export const signupInit = async (payload: SignupPayload) => {
       lastName: payload.profileData?.lastName || "",
       age: payload.profileData?.age || null,
       weight: payload.profileData?.weight || null,
-      gender: payload.profileData?.gender || "",
+      gender: payload.profileData?.gender || null,
     };
   } else if (assignRole === USER_ROLES.SERVICE_PROVIDER) {
     roleProfileData = {

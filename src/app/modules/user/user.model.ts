@@ -169,7 +169,7 @@ const userSchema = new Schema<IUser, UserModel>(
         required: function () {
           return this.role === USER_ROLES.USER;
         },
-        default: "",
+        default: null,
       },
 
       designation: {
