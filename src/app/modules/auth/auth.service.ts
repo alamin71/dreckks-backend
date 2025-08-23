@@ -41,7 +41,7 @@ export const signupInit = async (payload: SignupPayload) => {
     };
   } else if (assignRole === USER_ROLES.SERVICE_PROVIDER) {
     roleProfileData = {
-      designation: payload.profileData?.DESIGNATION || "",
+      designation: payload.profileData?.designation || "",
       resumeUrl: payload.profileData?.resumeUrl || "",
     };
   } else if (assignRole === USER_ROLES.HOSPITALITY_VENUE) {

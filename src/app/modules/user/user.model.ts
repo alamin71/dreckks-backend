@@ -163,7 +163,14 @@ const userSchema = new Schema<IUser, UserModel>(
       lastName: { type: String, default: "" },
       age: { type: Number, default: null },
       weight: { type: Number, default: null },
-      gender: { type: String, enum: Object.values(GENDER), default: "" }, // ✅ enum
+      gender: {
+        type: String,
+        enum: Object.values(GENDER),
+        required: function () {
+          return this.role === USER_ROLES.USER;
+        },
+        default: "",
+      },
 
       designation: {
         type: String,
