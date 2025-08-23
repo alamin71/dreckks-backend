@@ -169,6 +169,7 @@ export const login = async (email: string, password: string) => {
     throw new AppError(StatusCodes.BAD_REQUEST, "password is incorrect");
   }
 
+  // OTP verified?
   if (!user.verified) {
     throw new AppError(
       StatusCodes.FORBIDDEN,
@@ -176,22 +177,9 @@ export const login = async (email: string, password: string) => {
     );
   }
 
-  if (!user.subscription?.isActive || user.subscription?.status !== "ACTIVE") {
-    throw new AppError(
-      StatusCodes.FORBIDDEN,
-      "Your subscription is pending admin approval."
-    );
-  }
-
-  // SUBSCRIPTION GATE (admin approval required)
+  // subscription check
   const sub: any = (user as any).subscription || {};
-  const notApproved =
-    !sub.isActive ||
-    sub.status !== "active" ||
-    (sub.expiresAt && new Date(sub.expiresAt) <= new Date());
-
-  if (notApproved) {
-    // Friendly error: কোন স্টেজে আছে সেটা বললে UX ভালো হয়
+  if (!sub.isActive || sub.status !== "ACTIVE") {
     const stage =
       sub.status === "pending"
         ? "Plan selected, payment required"
