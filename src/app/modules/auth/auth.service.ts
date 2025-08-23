@@ -162,7 +162,7 @@ export const resendSignupOtp = async (signupToken: string) => {
 
 // -------------------- Login --------------------
 export const login = async (email: string, password: string) => {
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({ email }).select("+password subscription");
   if (!user) throw new AppError(StatusCodes.BAD_REQUEST, "User not found");
 
   if (!(await User.isMatchPassword(password, user.password))) {
@@ -171,8 +171,31 @@ export const login = async (email: string, password: string) => {
 
   if (!user.verified)
     throw new AppError(StatusCodes.FORBIDDEN, "Account not verified");
-  if (user.status !== "active")
+  if (user.status !== "ACTIVE")
     throw new AppError(StatusCodes.FORBIDDEN, "Account not active");
+
+  // SUBSCRIPTION GATE (admin approval required)
+  const sub: any = (user as any).subscription || {};
+  const notApproved =
+    !sub.isActive ||
+    sub.status !== "active" ||
+    (sub.expiresAt && new Date(sub.expiresAt) <= new Date());
+
+  if (notApproved) {
+    // Friendly error: কোন স্টেজে আছে সেটা বললে UX ভালো হয়
+    const stage =
+      sub.status === "pending"
+        ? "Plan selected, payment required"
+        : sub.status === "pending_approval"
+        ? "Payment done, waiting for admin approval"
+        : sub.status === "rejected"
+        ? "Subscription rejected by admin"
+        : "No active subscription";
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      `${stage}. You cannot login yet.`
+    );
+  }
 
   const payload = {
     id: user._id.toString(),
@@ -182,12 +205,11 @@ export const login = async (email: string, password: string) => {
   const accessToken = jwtHelper.createAccessToken(payload);
   const refreshToken = jwtHelper.createRefreshToken(payload);
 
-  // Full user object
   const { password: _, ...userData } = user.toObject();
 
   return {
     message: "Login successful",
-    user: userData, // full user info
+    user: userData,
     accessToken,
     refreshToken,
   };

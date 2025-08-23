@@ -51,7 +51,7 @@
 //   isActive: boolean;
 //   startDate?: Date;
 //   endDate?: Date;
-//    plan?: String;     
+//    plan?: String;
 //   status?:String ;
 // };
 
@@ -116,9 +116,15 @@ export type ProfileData = {
   venueTypes?: string[];
 };
 
+// ----------------- Enums -----------------
+export type SubscriptionStatus = "PENDING" | "ACTIVE" | "REJECTED" | "EXPIRED";
+
+export type UserStatus = "ACTIVE" | "BLOCKED";
+
+// ----------------- Subscription Data -----------------
 export type SubscriptionData = {
   planId?: string | Types.ObjectId | null;
-  status?: "active" | "expired";
+  status?: SubscriptionStatus;
   isActive?: boolean;
   startDate?: Date;
   endDate?: Date;
@@ -126,6 +132,7 @@ export type SubscriptionData = {
   expiresAt?: Date;
 };
 
+// ----------------- User -----------------
 export type IUser = {
   name: string;
   role: USER_ROLES;
@@ -135,7 +142,7 @@ export type IUser = {
   isDeleted?: boolean;
   stripeCustomerId?: string;
   defaultPaymentMethodId?: string;
-  status?: "active" | "blocked";
+  status?: UserStatus;
   verified?: boolean;
 
   profileData?: ProfileData;

@@ -142,7 +142,11 @@ const userSchema = new Schema<IUser, UserModel>(
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true, select: false, minlength: 8 },
     image: { type: String, default: "" },
-    status: { type: String, enum: ["active", "blocked"], default: "active" },
+    status: {
+      type: String,
+      enum: ["PENDING", "ACTIVE", "REJECTED"],
+      default: "PENDING",
+    },
     verified: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
 

@@ -90,8 +90,41 @@ const sendEmailForAdmin = async (values: ISendEmail) => {
     errorLogger.error("Email", error);
   }
 };
+// 1️Payment success mail
+const sendPaymentSuccessEmail = async (
+  to: string,
+  userName: string,
+  amount: number
+) => {
+  await sendEmail({
+    to,
+    subject: "Payment Successful - Subscription Pending Approval",
+    html: `
+      <p>Hi ${userName},</p>
+      <p>Your payment of <b>$${amount}</b> was successful.</p>
+      <p>Your subscription is now pending admin approval. You will be notified once it is approved.</p>
+      <p>Thank you for your purchase!</p>
+    `,
+  });
+};
+
+// 2Subscription approval mail
+const sendSubscriptionApprovedEmail = async (to: string, userName: string) => {
+  await sendEmail({
+    to,
+    subject: "Welcome! Your Subscription is Approved 🎉",
+    html: `
+      <p>Hi ${userName},</p>
+      <p>Congratulations! Your subscription has been approved by admin.</p>
+      <p>You can now login using your registered email & password.</p>
+      <p>Enjoy our services 🚀</p>
+    `,
+  });
+};
 
 export const emailHelper = {
   sendEmail,
   sendEmailForAdmin,
+  sendPaymentSuccessEmail,
+  sendSubscriptionApprovedEmail,
 };
