@@ -99,7 +99,7 @@ export type ProfileData = {
   lastName?: string;
   age?: number;
   weight?: number;
-  sex?: string;
+  gender?: string;
 
   // Service Provider specific
   designation?: string;
@@ -115,6 +115,13 @@ export type ProfileData = {
   allowEvents?: boolean;
   venueTypes?: string[];
 };
+// ----------------- Document -----------------
+export interface IDocument {
+  name: string;
+  url: string;
+  uploadedAt?: Date;
+  verified?: boolean;
+}
 
 // ----------------- Enums -----------------
 export type SubscriptionStatus = "PENDING" | "ACTIVE" | "REJECTED" | "EXPIRED";
@@ -147,6 +154,7 @@ export type IUser = {
 
   profileData?: ProfileData;
   subscription?: SubscriptionData;
+  documents?: IDocument[];
 
   authentication?: {
     isResetPassword?: boolean;

@@ -192,7 +192,15 @@ const userSchema = new Schema<IUser, UserModel>(
       allowEvents: { type: Boolean, default: false },
       venueTypes: { type: [String], default: [] },
     },
-
+    // Necessary Documents (for Service Providers & Hospitality Venue)
+    documents: [
+      {
+        name: { type: String, required: true }, // e.g. "Trade License", "NID"
+        url: { type: String, required: true }, // file storage url
+        uploadedAt: { type: Date, default: Date.now },
+        verified: { type: Boolean, default: false }, // admin verification
+      },
+    ],
     subscription: {
       planId: { type: String, default: null },
       isActive: { type: Boolean, default: false },
